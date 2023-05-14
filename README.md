@@ -11,9 +11,9 @@ Tools used:
 
 ## Table of contents
 
-1. SOLID Introduction
-2. Single Responsibility Principle
-3. Open-Closed Principle
+1. [SOLID Introduction](https://github.com/backstreetbrogrammer/28_SOLID#chapter-01-solid-introduction)
+2. [Single Responsibility Principle](https://github.com/backstreetbrogrammer/28_SOLID#chapter-02-single-responsibility-principle)
+3. [Open-Closed Principle](https://github.com/backstreetbrogrammer/28_SOLID#chapter-03-open-closed-principle)
 4. Liskov Substitution Principle
 5. Interface Segregation Principle
 6. Dependency Inversion Principle
@@ -180,3 +180,50 @@ maintainable, flexible and readable.
 
 ### Chapter 03. Open-Closed Principle
 
+Classes should be open for extension but closed for modification.
+
+In doing so, we stop ourselves from modifying existing code and causing potential new bugs in an otherwise happy
+application.
+
+One exception to the rule is when fixing bugs in existing code.
+
+Let's take the same example class `Order`, which has been working fine so far in our order management system.
+
+```java
+public class Order {
+
+    private int orderId;
+    private String symbol;
+    private Double price;
+    private Integer quantity;
+    private String side;
+    private boolean isDMA;
+
+    //constructor, getters and setters
+}
+```
+
+Now suppose we started specific order features required for DMA (direct market access) or Algo order (VWAP, TWAP, etc.).
+
+It might be tempting to just open up the `Order` class and add fields pertaining to DMA or Algo orders — but this may
+cause errors and might throw up in our application which was already working fine.
+
+So, to fix this and applying open-close principle => we should use inheritance.
+
+```java
+public class DMAOrder extends Order {
+    // DMA fields
+}
+```
+
+```java
+public class AlgoOrder extends Order {
+    // Algo fields
+}
+```
+
+Thus, we can say that `Order` class is now open for extension (by inheritance) and closed for modification.
+
+---
+
+### Chapter 04. Liskov Substitution Principle
