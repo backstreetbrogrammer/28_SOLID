@@ -15,8 +15,8 @@ Tools used:
 2. [Single Responsibility Principle](https://github.com/backstreetbrogrammer/28_SOLID#chapter-02-single-responsibility-principle)
 3. [Open-Closed Principle](https://github.com/backstreetbrogrammer/28_SOLID#chapter-03-open-closed-principle)
 4. [Liskov Substitution Principle](https://github.com/backstreetbrogrammer/28_SOLID#chapter-04-liskov-substitution-principle)
-5. Interface Segregation Principle
-6. Dependency Inversion Principle
+5. [Interface Segregation Principle](https://github.com/backstreetbrogrammer/28_SOLID#chapter-05-interface-segregation-principle)
+6. [Dependency Inversion Principle](https://github.com/backstreetbrogrammer/28_SOLID#chapter-06-dependency-inversion-principle)
 
 ---
 
@@ -231,3 +231,196 @@ This principle states that "Derived or child classes must be substitutable for t
 In other words, if class A is a subtype of class B, then we should be able to replace B with A without interrupting the
 behavior of our program.
 
+```
+class B {}
+
+class A extends B {}
+
+public void useClass(B object) {}
+
+useClass(new B());
+
+// as per Liskov Substitution Principle, we can pass instance of A object as argument without any error.
+useClass(new A());
+```
+
+Let's demonstrate the same using actual classes: we have a `Rectangle` class:
+
+```java
+public class Rectangle {
+
+    private int width;
+    private int height;
+
+    public Rectangle(final int width, final int height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(final int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(final int height) {
+        this.height = height;
+    }
+
+    public int computeArea() {
+        return width * height;
+    }
+}
+```
+
+Now, let's create another child class `Square` as:
+
+```java
+public class Square extends Rectangle {
+    public Square(int side) {
+        super(side, side);
+    }
+
+    @Override
+    public void setWidth(int width) {
+        setSide(width);
+    }
+
+    @Override
+    public void setHeight(int height) {
+        setSide(height);
+    }
+
+    public void setSide(int side) {
+        super.setWidth(side);
+        super.setHeight(side);
+    }
+
+}
+```
+
+Suppose we have a method that takes `Rectangle` class object as argument:
+
+```
+void useRectangle(Rectangle rectangle) {
+		rectangle.setHeight(20);
+		rectangle.setWidth(30);
+		assert rectangle.getHeight() == 20 : "Height Not equal to 20";
+		assert rectangle.getWidth() == 30 : "Width Not equal to 30";
+}
+```
+
+And, I call this method with Rectangle object and Square object:
+
+```
+Rectangle rectangle = new Rectangle(10, 20);
+useRectangle(rectangle);
+
+Square square = new Square(10);
+useRectangle(square); 
+```
+
+This call `useRectangle(square)` will fail because when we call `rectangle.setWidth(30)`, it will set `Square` side
+as **30** and this assertion will fail:
+
+```
+assert rectangle.getHeight() == 20 : "Height Not equal to 20";
+```
+
+**Fixing** the class structure, which should adhere to **Liskov Substitution Principle**
+
+```java
+public interface Shape {
+    int computeArea();
+}
+```
+
+Now, `Rectangle` class and `Square` class can both implement `Shape` interface.
+
+```java
+public class Rectangle implements Shape {
+    private int width;
+    private int height;
+
+    public Rectangle(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    @Override
+    public int computeArea() {
+        return width * height;
+    }
+}
+```
+
+```java
+public class Square implements Shape {
+    private int side;
+
+    public Square(int side) {
+        this.side = side;
+    }
+
+    public void setSide(int side) {
+        this.side = side;
+    }
+
+    public int getSide() {
+        return side;
+    }
+
+    @Override
+    public int computeArea() {
+        return side * side;
+    }
+}
+```
+
+For the method for `computeArea()`, we can create as such:
+
+```
+void computeAreaForAnyShape(Shape shape) {
+	shape.computeArea();
+}
+```
+
+And, we can pass both `Rectangle` and `Shape` class objects without any error.
+
+```
+Rectangle rectangle = new Rectangle(10, 20);
+computeAreaForAnyShape(rectangle); // 10 * 20
+
+Square square = new Square(10);
+computeAreaForAnyShape(square); // 10 * 10
+```
+
+---
+
+### Chapter 05. Interface Segregation Principle
+
+---
+
+### Chapter 06. Dependency Inversion Principle
