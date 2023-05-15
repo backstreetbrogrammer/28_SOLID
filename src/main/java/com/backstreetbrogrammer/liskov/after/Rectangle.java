@@ -4,7 +4,7 @@ public class Rectangle implements Shape {
     private int width;
     private int height;
 
-    public Rectangle(int width, int height) {
+    public Rectangle(final int width, final int height) {
         this.width = width;
         this.height = height;
     }
@@ -13,7 +13,7 @@ public class Rectangle implements Shape {
         return width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(final int width) {
         this.width = width;
     }
 
@@ -21,7 +21,7 @@ public class Rectangle implements Shape {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(final int height) {
         this.height = height;
     }
 

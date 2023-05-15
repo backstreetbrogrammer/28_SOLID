@@ -17,6 +17,7 @@ Tools used:
 4. [Liskov Substitution Principle](https://github.com/backstreetbrogrammer/28_SOLID#chapter-04-liskov-substitution-principle)
 5. [Interface Segregation Principle](https://github.com/backstreetbrogrammer/28_SOLID#chapter-05-interface-segregation-principle)
 6. [Dependency Inversion Principle](https://github.com/backstreetbrogrammer/28_SOLID#chapter-06-dependency-inversion-principle)
+7. Summary
 
 ---
 
@@ -283,21 +284,21 @@ Now, let's create another child class `Square` as:
 
 ```java
 public class Square extends Rectangle {
-    public Square(int side) {
+    public Square(final int side) {
         super(side, side);
     }
 
     @Override
-    public void setWidth(int width) {
+    public void setWidth(final int width) {
         setSide(width);
     }
 
     @Override
-    public void setHeight(int height) {
+    public void setHeight(final int height) {
         setSide(height);
     }
 
-    public void setSide(int side) {
+    public void setSide(final int side) {
         super.setWidth(side);
         super.setHeight(side);
     }
@@ -348,7 +349,7 @@ public class Rectangle implements Shape {
     private int width;
     private int height;
 
-    public Rectangle(int width, int height) {
+    public Rectangle(final int width, final int height) {
         this.width = width;
         this.height = height;
     }
@@ -357,7 +358,7 @@ public class Rectangle implements Shape {
         return width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(final int width) {
         this.width = width;
     }
 
@@ -365,7 +366,7 @@ public class Rectangle implements Shape {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(final int height) {
         this.height = height;
     }
 
@@ -380,11 +381,11 @@ public class Rectangle implements Shape {
 public class Square implements Shape {
     private int side;
 
-    public Square(int side) {
+    public Square(final int side) {
         this.side = side;
     }
 
-    public void setSide(int side) {
+    public void setSide(final int side) {
         this.side = side;
     }
 
@@ -421,6 +422,108 @@ computeAreaForAnyShape(square); // 10 * 10
 
 ### Chapter 05. Interface Segregation Principle
 
+Larger interfaces should be split into smaller ones. By doing so, we can ensure that implementing classes only need to
+be concerned about the methods that are of interest to them.
+
+Suppose we have a fat interface:
+
+```java
+interface Account {
+    double getBalance();
+
+    void processLocalPayment(double amount);
+
+    void processInternationalPayment(double amount);
+}
+```
+
+Now suppose there is a class which only needs to take care of maintaining the balance and not bothered about payments,
+it is forced to implement payment methods with empty implementation or throw some exception.
+
+```java
+public class MaintainAccountBalance implements Account {
+    private double balance;
+
+    public double withdraw(final double amount) {
+        final double currentBalance = getBalance();
+        if (amount > currentBalance) {
+            throw new RuntimeException("Not enough balance");
+        }
+        setBalance(currentBalance - amount);
+        return amount;
+    }
+
+    private void setBalance(final double amount) {
+        balance = amount;
+    }
+
+    @Override
+    public double getBalance() {
+        // check from persistence or other logic
+        return balance;
+    }
+
+    @Override
+    public void processLocalPayment(final double amount) {
+        // not concerned - may throw UnsupportedOperationException
+    }
+
+    @Override
+    public void processInternationalPayment(final double amount) {
+        // not concerned - may throw UnsupportedOperationException
+    }
+}
+```
+
+This is breaking Interface Segregation Principle.
+
+Fixing is just to break the `Account` interface into 3 smaller interfaces.
+
+```java
+public interface BaseAccount {
+    double getBalance();
+}
+```
+
+```java
+public interface LocalMoneyTransfer {
+    void processLocalPayment(double amount);
+}
+```
+
+```java
+public interface InternationalMoneyTransfer {
+    void processInternationalPayment(double amount);
+}
+```
+
+Now we can separate classes dedicated to implementation of each above functions creating cleaner code and highly
+cohesive classes. It also helps in Single Responsibility Principle for a class.
+
 ---
 
 ### Chapter 06. Dependency Inversion Principle
+
+---
+
+### Summary
+
+> Single Responsibility Principle
+
+Each class should be responsible for a single part or functionality of the system.
+
+> Open-Closed Principle
+
+Software components should be open for extension, but closed for modification.
+
+> Liskov Substitution Principle
+
+Objects of a superclass should be replaceable with objects of its subclasses without breaking the system.
+
+> Interface Segregation Principle
+
+No client should be forced to depend on methods that it does not use.
+
+> Dependency Inversion Principle
+
+High-level modules should not depend on low-level modules. Both should depend on abstractions.

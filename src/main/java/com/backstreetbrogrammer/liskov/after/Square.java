@@ -3,11 +3,11 @@ package com.backstreetbrogrammer.liskov.after;
 public class Square implements Shape {
     private int side;
 
-    public Square(int side) {
+    public Square(final int side) {
         this.side = side;
     }
 
-    public void setSide(int side) {
+    public void setSide(final int side) {
         this.side = side;
     }
 
