@@ -14,7 +14,7 @@ Tools used:
 1. [SOLID Introduction](https://github.com/backstreetbrogrammer/28_SOLID#chapter-01-solid-introduction)
 2. [Single Responsibility Principle](https://github.com/backstreetbrogrammer/28_SOLID#chapter-02-single-responsibility-principle)
 3. [Open-Closed Principle](https://github.com/backstreetbrogrammer/28_SOLID#chapter-03-open-closed-principle)
-4. Liskov Substitution Principle
+4. [Liskov Substitution Principle](https://github.com/backstreetbrogrammer/28_SOLID#chapter-04-liskov-substitution-principle)
 5. Interface Segregation Principle
 6. Dependency Inversion Principle
 
@@ -57,7 +57,6 @@ public class Order {
     private Double price;
     private Integer quantity;
     private String side;
-    private boolean isDMA;
 
     //constructor, getters and setters
 }
@@ -197,7 +196,6 @@ public class Order {
     private Double price;
     private Integer quantity;
     private String side;
-    private boolean isDMA;
 
     //constructor, getters and setters
 }
@@ -227,3 +225,9 @@ Thus, we can say that `Order` class is now open for extension (by inheritance) a
 ---
 
 ### Chapter 04. Liskov Substitution Principle
+
+This principle states that "Derived or child classes must be substitutable for their base or parent classes".
+
+In other words, if class A is a subtype of class B, then we should be able to replace B with A without interrupting the
+behavior of our program.
+
