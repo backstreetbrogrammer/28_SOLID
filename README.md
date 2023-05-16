@@ -17,7 +17,7 @@ Tools used:
 4. [Liskov Substitution Principle](https://github.com/backstreetbrogrammer/28_SOLID#chapter-04-liskov-substitution-principle)
 5. [Interface Segregation Principle](https://github.com/backstreetbrogrammer/28_SOLID#chapter-05-interface-segregation-principle)
 6. [Dependency Inversion Principle](https://github.com/backstreetbrogrammer/28_SOLID#chapter-06-dependency-inversion-principle)
-7. Summary
+7. [Summary](https://github.com/backstreetbrogrammer/28_SOLID#summary)
 
 ---
 
@@ -503,6 +503,94 @@ cohesive classes. It also helps in Single Responsibility Principle for a class.
 ---
 
 ### Chapter 06. Dependency Inversion Principle
+
+The principle of dependency inversion refers to the decoupling of software modules. This way, instead of high-level
+modules depending on low-level modules, both will depend on **abstractions**.
+
+Because **abstractions** do not depend on **details**, but details depend on abstractions, it decouples the software.
+
+Suppose we have a class Computer:
+
+```java
+public class Computer {
+    private final UltraHDMonitor monitor;
+    private final CordlessKeyboard keyboard;
+    private final LaserMouse mouse;
+
+    public Computer() {
+        monitor = new UltraHDMonitor();
+        keyboard = new CordlessKeyboard();
+        mouse = new LaserMouse();
+    }
+
+    // other methods
+
+}
+```
+
+This code will work, but by declaring the `UltraHDMonitor`, `CordlessKeyboard` and `LaserMouse` with the `new`
+keyword in the constructor, we've tightly coupled these 4 classes together.
+
+Not only does this make our `Computer` class hard to test, but we've also lost the ability to switch out our
+`UltraHDMonitor`, `CordlessKeyboard` and `LaserMouse` classes with a different one should the need arise.
+
+**Fixing** the design with **Dependency Inversion Principle**
+
+Create 3 interfaces each for Monitor, Keyboard and Mouse.
+
+```java
+public interface Monitor {
+}
+```
+
+```java
+public interface Keyboard {
+}
+```
+
+```java
+public interface Mouse {
+}
+```
+
+Now use interfaces in the constructor:
+
+```java
+public class Computer {
+    private final Monitor monitor;
+    private final Keyboard keyboard;
+    private final Mouse mouse;
+
+    public Computer(final Monitor monitor, final Keyboard keyboard, final Mouse mouse) {
+        this.monitor = monitor;
+        this.keyboard = keyboard;
+        this.mouse = mouse;
+    }
+
+    // other methods
+
+}
+```
+
+Here, we're using the **dependency injection pattern** to facilitate adding the `Monitor`, `Keyboard` and `Mouse`
+dependencies into the `Computer` class.
+
+Our individual classes can implement these interfaces. And suppose if we want, we can easily switch out the type of
+keyboard in our machine with a different implementation of the interface.
+
+```java
+public class CordlessKeyboard implements Keyboard {
+
+}
+```
+
+Change to use different keyboard without changing `Computer` class.
+
+```java
+public class StandardKeyboard implements Keyboard {
+
+}
+```
 
 ---
 
